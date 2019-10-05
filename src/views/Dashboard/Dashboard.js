@@ -38,6 +38,8 @@ import { bugs, website, server } from "variables/general.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useEditHttp } from "../../Hooks/editHttp";
 import { usePostHttp } from "../../Hooks/postHttp";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
 
 import {
   dailySalesChart,
@@ -47,10 +49,34 @@ import {
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
+var Chartist = require("chartist");
 const useStyles = makeStyles(styles);
+
+const useStyles2 = makeStyles(theme => ({
+  fab: {
+    position: 'fixed',
+    right: 0,
+    bottom: 0,
+    marginRight: theme.spacing(4),
+    marginBottom: theme.spacing(2),
+    zIndex: 1000,
+  },
+  chat: {
+    position: 'fixed',
+    right: 50,
+    bottom: 100,
+    zIndex: 1000,
+    border: 0
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1)
+  }
+}));
 
 export default function Dashboard() {
   const classes = useStyles();
+  const classes2 = useStyles2();
+
   const [values, setValues] = React.useState();
   const [circular, setCircular] = React.useState(false);
   const [year, setYear] = React.useState();
@@ -61,6 +87,11 @@ export default function Dashboard() {
   const [yearRain, fetchPostCall] = usePostHttp();
   const [yearData, setGraphData] = React.useState();
   const [regions, setRegions] = React.useState();
+  const [display, setDisplay] = React.useState(false);
+
+  const handleFab = event => {
+    setDisplay(!display);
+  }
   const handleChange = async event => {
     setValues(event.target.value);
     const payload = {
@@ -178,10 +209,10 @@ export default function Dashboard() {
       </GridContainer>
       <GridContainer style={{ justifyContent: "center", textAlign: "center" }}>
         <GridItem
-          xs={12}
+          xs={6}
           style={{
             display: "flex",
-            justifyContent: "center",
+            // justifyContent: "center",
             marginBottom: "20px!important"
           }}
         >
@@ -208,6 +239,7 @@ export default function Dashboard() {
             </Select>
           </FormControl>
         </GridItem>
+        <GridItem xs={6}>{values && <p>Showing Results For  {values}  Region</p>}</GridItem>
         <GridItem xs={10} style={{ textAlign: "center" }}>
           {circular && <CircularProgress className={classes.progress} />}
         </GridItem>
@@ -239,7 +271,20 @@ export default function Dashboard() {
                     series: [year_rain_annually.Rainfall]
                   }}
                   type="Line"
-                  options={dailySalesChart.options}
+                  options={{
+                    lineSmooth: Chartist.Interpolation.cardinal({
+                      tension: 0
+                    }),
+                    low: Math.min(...year_rain_annually.Rainfall),
+                    high: Math.max(...year_rain_annually.Rainfall) + 100, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+                    chartPadding: {
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                      left: 0
+                    },
+                    height: 450
+                  }}
                   listener={dailySalesChart.animation}
                 />
               </CardHeader>
@@ -289,31 +334,11 @@ export default function Dashboard() {
             </Card>
           </GridItem>
         )}
-        {!circular && year_rain_annually && (
-          <GridItem xs={6}>
-            <Card chart>
-              <CardHeader color="warning">
-                <ChartistGraph
-                  className="ct-chart"
-                  data={emailsSubscriptionChart.data}
-                  type="Bar"
-                  options={emailsSubscriptionChart.options}
-                  responsiveOptions={emailsSubscriptionChart.responsiveOptions}
-                  listener={emailsSubscriptionChart.animation}
-                />
-              </CardHeader>
-              <CardBody>
-                <h4 className={classes.cardTitle}>
-                  Rainfall Prediction of the year 2020
-                </h4>
-              </CardBody>
-            </Card>
-          </GridItem>
-        )}
+       
         {year_rain_annually && year_rain_monthly && (
           <GridItem xs={6}>
             <Card chart>
-              <CardHeader color="warning">
+              <CardHeader color="primary">
                 <ChartistGraph
                   className="ct-chart"
                   data={{
@@ -334,7 +359,19 @@ export default function Dashboard() {
                     series: [year_rain_monthly]
                   }}
                   type="Bar"
-                  options={emailsSubscriptionChart.options}
+                  options={{
+                    axisX: {
+                      showGrid: false
+                    },
+                    low: 0,
+                    high: Math.max(...year_rain_monthly) + 10,
+                    height: 450,
+                    chartPadding: {
+                      top: 0,
+                      right: 5,
+                      bottom: 0,
+                      left: 0
+                    }}}
                   responsiveOptions={emailsSubscriptionChart.responsiveOptions}
                   listener={emailsSubscriptionChart.animation}
                 />
@@ -347,7 +384,39 @@ export default function Dashboard() {
             </Card>
           </GridItem>
         )}
+
+        {!circular && year_rain_annually && (
+                  <GridItem xs={12}>
+                    <Card chart>
+                      <CardHeader color="warning">
+                        <ChartistGraph
+                          className="ct-chart"
+                          data={emailsSubscriptionChart.data}
+                          type="Bar"
+                          options={emailsSubscriptionChart.options}
+                          responsiveOptions={emailsSubscriptionChart.responsiveOptions}
+                          listener={emailsSubscriptionChart.animation}
+                        />
+                      </CardHeader>
+                      <CardBody style={{margin: '12px 0px',alignItems: 'center'}}>
+                        <h4 className={classes.cardTitle} >
+                          Rainfall Prediction of the year 2020
+                        </h4>
+                      </CardBody>
+                    </Card>
+                  </GridItem>
+                )}
       </GridContainer>
+      <Fab color="primary" aria-label="add" className={classes2.fab} onClick={handleFab}>
+        <AddIcon />
+      </Fab>
+      { display && <iframe
+        allow="microphone;"
+        width="350"
+        height="430"
+        src="https://console.dialogflow.com/api-client/demo/embedded/66399058-a9e5-496a-9f33-3a3268e4a7b3"
+        className={classes2.chat}
+      ></iframe>}
 
       {/* <GridContainer>
         <GridItem xs={12} sm={12} md={6}>

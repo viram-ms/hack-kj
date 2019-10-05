@@ -49,7 +49,7 @@ const dailySalesChart = {
       bottom: 0,
       left: 0
     },
-    height: 300
+    height: 450
   },
   // for animation
   animation: {
@@ -111,7 +111,7 @@ const emailsSubscriptionChart = {
     },
     low: 0,
     high: 100,
-    height: 300,
+    height: 450,
     chartPadding: {
       top: 0,
       right: 5,

@@ -52,7 +52,6 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-import "./style.css";
 import { Button } from "@material-ui/core";
 import { crops } from "../../variables/crops";
 
@@ -79,7 +78,7 @@ const useStyles2 = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   }
 }));
-export default function Dashboard() {
+export default function Feed() {
   const classes = useStyles();
   const classes2 = useStyles2();
   const [values, setValues] = React.useState();
@@ -149,67 +148,13 @@ export default function Dashboard() {
   return (
     <div>
       <GridContainer style={{ justifyContent: "center", textAlign: "center" }}>
-        <GridItem
-          xs={6}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: "20px!important"
-          }}
-        >
-          <FormControl
-            variant="outlined"
-            className={classes.formControl}
-            style={{ minWidth: 600, marginBottom: 30 }}
-          >
-            <InputLabel htmlFor="outlined-age-simple">
-              Select Region For Farming
-            </InputLabel>
-            <Select
-              value={values}
-              onChange={handleChange}
-              // labelWidth={labelWidth}
-              inputProps={{
-                name: "Region",
-                id: "outlined-age-simple"
-              }}
-            >
-              {message &&
-                message.map(item => <MenuItem value={item}>{item}</MenuItem>)}
-            </Select>
-          </FormControl>
-        </GridItem>
-        <GridItem xs={6}>
+     
+        <GridItem xs={12}>
        <div class="gcse-search" style={{visibility: 'hidden!important'}}></div>
 
         </GridItem>
 
-        <GridItem xs={12} style={{ textAlign: "center" }}>
-          {circular && <CircularProgress className={classes.progress} />}
-        </GridItem>
-        {!circular && (
-          <GridItem xs={12}>
-            <Card chart>
-              <CardHeader color="success">
-                <ChartistGraph
-                  className="ct-chart"
-                  data={dailySalesChart.data}
-                  type="Line"
-                  options={dailySalesChart.options}
-                  listener={dailySalesChart.animation}
-                />
-              </CardHeader>
-              <CardBody style={{ display: "flex" }}>
-                <h4
-                  className={classes.cardTitle}
-                  style={{ flex: 1, marginTop: 10 }}
-                >
-                  Predicted Rainfall of year 2020
-                </h4>
-              </CardBody>
-            </Card>
-          </GridItem>
-        )}
+      
       </GridContainer>
       <Helmet>
         <script
@@ -248,7 +193,7 @@ export default function Dashboard() {
         </div>
       </form>
       <button onClick={handleSubmit}>Submit</button> */}
-      {values && newCrops && (
+      {newCrops && (
         <div>
           {" "}
           <h3>Suitable Crops For {values}</h3>
