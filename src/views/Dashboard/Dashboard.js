@@ -17,6 +17,10 @@ import Accessibility from "@material-ui/icons/Accessibility";
 import BugReport from "@material-ui/icons/BugReport";
 import Code from "@material-ui/icons/Code";
 import Cloud from "@material-ui/icons/Cloud";
+import CloudOff from "@material-ui/icons/CloudOff";
+import CloudQueue from "@material-ui/icons/CloudQueue";
+import CloudCircle from "@material-ui/icons/CloudCircle";
+
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -38,6 +42,8 @@ import { bugs, website, server } from "variables/general.js";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useEditHttp } from "../../Hooks/editHttp";
 import { usePostHttp } from "../../Hooks/postHttp";
+import { useGetHttp } from "../../Hooks/getHttp";
+
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 
@@ -77,17 +83,21 @@ export default function Dashboard() {
   const classes = useStyles();
   const classes2 = useStyles2();
 
-  const [values, setValues] = React.useState();
+  const [values, setValues] = React.useState('BIHAR');
   const [circular, setCircular] = React.useState(false);
   const [year, setYear] = React.useState();
   const [year_rain_annually, setYearRain] = React.useState();
   const [year_rain_monthly, setMonthRain] = React.useState();
+  const [predicted_rain, setPredictedRain] = React.useState();
 
   const [message, fetchCall] = useEditHttp();
   const [yearRain, fetchPostCall] = usePostHttp();
+  const [messageGet, fetchGetCall] = useGetHttp();
+
   const [yearData, setGraphData] = React.useState();
   const [regions, setRegions] = React.useState();
   const [display, setDisplay] = React.useState(false);
+  const [avgValues,setAvgValues] = React.useState();
 
   const handleFab = event => {
     setDisplay(!display);
@@ -95,14 +105,25 @@ export default function Dashboard() {
   const handleChange = async event => {
     setValues(event.target.value);
     const payload = {
-      region: event.target.value
+      region: event.target.value 
     };
     const rainData = await fetchPostCall(
       `/graph/yearly_rain/`,
       JSON.stringify(payload)
     );
 
+    const payload2 = {
+      region: 'SUBDIVISION_' +event.target.value 
+    };
+    const predictedRain = await fetchPostCall(
+      `/graph/predicted_rain/`,
+      JSON.stringify(payload2)
+    );
+
+    console.log(predictedRain);
+
     setYearRain(rainData);
+    setPredictedRain(predictedRain);
     console.log(rainData.Rainfall);
   };
 
@@ -128,7 +149,10 @@ export default function Dashboard() {
   React.useEffect(() => {
     fetchCall(`/graph/regions`);
     setRegions(message);
+    fetchGetCall(`/graph/range`);
+    setAvgValues(messageGet);
   }, []);
+  console.log(avgValues);
   return (
     <div>
       <GridContainer>
@@ -136,74 +160,64 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="warning" stats icon>
               <CardIcon color="warning">
-                <Icon>content_copy</Icon>
+              <CloudOff />
               </CardIcon>
-              <p className={classes.cardCategory}>Used Space</p>
-              <h3 className={classes.cardTitle}>
-                49/50 <small>GB</small>
-              </h3>
+              <p className={classes.cardCategory} style={{fontSize: '18px!important'}}>Below 500mm</p>
             </CardHeader>
-            <CardFooter stats>
-              <div className={classes.stats}>
-                <Danger>
-                  <Warning />
-                </Danger>
-                <a href="#pablo" onClick={e => e.preventDefault()}>
-                  Get more space
-                </a>
-              </div>
-            </CardFooter>
+            <CardBody>
+              <span style={{color: 'black'}}>HARYANA & DELHI </span> , <span> </span>
+              <span style={{color: 'black'}}>WEST RAJASTHAN</span>
+            </CardBody>
           </Card>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="success" stats icon>
               <CardIcon color="success">
-                <Store />
+              <CloudQueue />
               </CardIcon>
-              <p className={classes.cardCategory}>Revenue</p>
-              <h3 className={classes.cardTitle}>$34,245</h3>
+              <p className={classes.cardCategory} style={{fontSize: '18px!important'}}>500 - 1000 mm</p>
+           
             </CardHeader>
-            <CardFooter stats>
-              <div className={classes.stats}>
-                <DateRange />
-                Last 24 Hours
-              </div>
-            </CardFooter>
+            <CardBody>
+            <span style={{color: 'black'}}>UTTAR PRADESH</span>, <span> </span>
+              <span style={{color: 'black'}}>PUNJAB</span> , <span> </span>
+              <span style={{color: 'black'}}>SAURASHTRA & KUTCH</span>
+            </CardBody>
           </Card>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="danger" stats icon>
               <CardIcon color="danger">
-                <Icon>info_outline</Icon>
+               <CloudCircle />
               </CardIcon>
-              <p className={classes.cardCategory}>Fixed Issues</p>
-              <h3 className={classes.cardTitle}>75</h3>
+              <p className={classes.cardCategory} style={{fontSize: '18px!important'}}>1000 - 1500 mm</p>
+            
             </CardHeader>
-            <CardFooter stats>
-              <div className={classes.stats}>
-                <LocalOffer />
-                Tracked from Github
-              </div>
-            </CardFooter>
+            <CardBody>
+            <span style={{color: 'black'}}>ORISSA</span>, <span> </span>
+             <span style={{color: 'black'}}>VIDARBHA</span>, <span> </span>
+             <span style={{color: 'black'}}>CHHATTISGARH</span>, <span> </span>
+             <span style={{color: 'black'}}>BIHAR</span>, <span> </span>
+
+            </CardBody>
           </Card>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
-                <Accessibility />
+               <Cloud />
               </CardIcon>
-              <p className={classes.cardCategory}>Followers</p>
-              <h3 className={classes.cardTitle}>+245</h3>
+              <p className={classes.cardCategory} style={{fontSize: '18px!important'}}>Above 1500mm</p>
             </CardHeader>
-            <CardFooter stats>
-              <div className={classes.stats}>
-                <Update />
-                Just Updated
-              </div>
-            </CardFooter>
+            <CardBody>
+            <span style={{color: 'black'}}>ARUNACHAL PRADESH</span>, <span> </span>
+            <span style={{color: 'black'}}>KONKAN & GOA</span>, <span> </span>
+            <span style={{color: 'black'}}>ASSAM & MEGHALAYA</span>, <span> </span>
+            </CardBody>
+          
           </Card>
         </GridItem>
       </GridContainer>
@@ -251,9 +265,6 @@ export default function Dashboard() {
                   className="ct-chart"
                   data={{
                     labels: [
-                      "2000",
-                      "2001",
-                      "2002",
                       "2003",
                       "2004",
                       "2005",
@@ -266,7 +277,10 @@ export default function Dashboard() {
                       "2012",
                       "2013",
                       "2014",
-                      "2015"
+                      "2015",
+                      "2016",
+                      "2017",
+                      "2018"
                     ],
                     series: [year_rain_annually.Rainfall]
                   }}
@@ -312,22 +326,22 @@ export default function Dashboard() {
                       id: "outlined-age-simple"
                     }}
                   >
-                    <MenuItem value={2000}>2000</MenuItem>
-                    <MenuItem value={2001}>2001</MenuItem>
-                    <MenuItem value={2002}>2002</MenuItem>
-                    <MenuItem value={2003}>2003</MenuItem>
-                    <MenuItem value={2004}>2004</MenuItem>
-                    <MenuItem value={2005}>2005</MenuItem>
-                    <MenuItem value={2006}>2006</MenuItem>
-                    <MenuItem value={2007}>2007</MenuItem>
-                    <MenuItem value={2008}>2008</MenuItem>
-                    <MenuItem value={2009}>2009</MenuItem>
-                    <MenuItem value={2010}>2010</MenuItem>
-                    <MenuItem value={2011}>2011</MenuItem>
-                    <MenuItem value={2012}>2012</MenuItem>
-                    <MenuItem value={2013}>2013</MenuItem>
-                    <MenuItem value={2014}>2014</MenuItem>
-                    <MenuItem value={2015}>2015</MenuItem>
+                    <MenuItem value={2000}>2003</MenuItem>
+                    <MenuItem value={2001}>2004</MenuItem>
+                    <MenuItem value={2002}>2005</MenuItem>
+                    <MenuItem value={2003}>2006</MenuItem>
+                    <MenuItem value={2004}>2007</MenuItem>
+                    <MenuItem value={2005}>2008</MenuItem>
+                    <MenuItem value={2006}>2009</MenuItem>
+                    <MenuItem value={2007}>2010</MenuItem>
+                    <MenuItem value={2008}>2011</MenuItem>
+                    <MenuItem value={2009}>2012</MenuItem>
+                    <MenuItem value={2010}>2013</MenuItem>
+                    <MenuItem value={2011}>2014</MenuItem>
+                    <MenuItem value={2012}>2015</MenuItem>
+                    <MenuItem value={2013}>2016</MenuItem>
+                    <MenuItem value={2014}>2017</MenuItem>
+                    <MenuItem value={2015}>2018</MenuItem>
                   </Select>
                 </FormControl>
               </CardBody>
@@ -378,20 +392,46 @@ export default function Dashboard() {
               </CardHeader>
               <CardBody>
                 <h4 className={classes.cardTitle}>
-                  Rainfall Analysis of the year {year}
+                  Rainfall Analysis of the year {year + 3}
                 </h4>
               </CardBody>
             </Card>
           </GridItem>
         )}
 
-        {!circular && year_rain_annually && (
+        {!circular && predicted_rain && (
                   <GridItem xs={12}>
                     <Card chart>
                       <CardHeader color="warning">
                         <ChartistGraph
                           className="ct-chart"
-                          data={emailsSubscriptionChart.data}
+                          data={{ labels: [
+                            "Jan",
+                            "Feb",
+                            "Mar",
+                            "Apr",
+                            "Mai",
+                            "Jun",
+                            "Jul",
+                            "Aug",
+                            "Sep",
+                            "Oct",
+                            "Nov",
+                            "Dec"
+                          ],
+                          series: [[predicted_rain['months_JAN'][0],
+                          predicted_rain['months_FEB'][0],
+                          predicted_rain['months_MAR'][0],
+                          predicted_rain['months_APR'][0],  
+                          predicted_rain['months_MAY'][0],
+                          predicted_rain['months_JUN'][0],
+                          predicted_rain['months_JUL'][0],
+                          predicted_rain['months_AUG'][0],
+                          predicted_rain['months_SEP'][0],
+                          predicted_rain['months_OCT'][0],
+                          predicted_rain['months_NOV'][0],
+                          predicted_rain['months_DEC'][0],   ]]}}
+                          
                           type="Bar"
                           options={emailsSubscriptionChart.options}
                           responsiveOptions={emailsSubscriptionChart.responsiveOptions}

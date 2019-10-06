@@ -28,6 +28,8 @@ import Language from "@material-ui/icons/Language";
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
 import Feed from "views/Feed/Feed";
+import Schemes from 'views/Schemes/Schemes';
+import Download from 'views/Download/Download';
 
 import TableList from "views/TableList/TableList.js";
 import Typography from "views/Typography/Typography.js";
@@ -37,6 +39,7 @@ import NotificationsPage from "views/Notifications/Notifications.js";
 import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 // core components/views for RTL layout
 import RTLPage from "views/RTLPage/RTLPage.js";
+import { Gallery } from "views/Gallery/Gallery";
 
 const dashboardRoutes = [
   {
@@ -57,10 +60,34 @@ const dashboardRoutes = [
   },
   {
     path: "/news",
-    name: "New Feed",
+    name: "New Feeds",
     rtlName: "ملف تعريفي للمستخدم",
     icon: Person,
     component: Feed,
+    layout: "/admin"
+  },
+  {
+    path: "/gallery",
+    name: "Rainfall Distribution",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: Person,
+    component: Gallery,
+    layout: "/admin"
+  },
+  {
+    path: "/Schemes",
+    name: "Government Schemes",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: Person,
+    component: Schemes,
+    layout: "/admin"
+  },
+  {
+    path: "/Download",
+    name: "Pdf Download",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: Person,
+    component: Download,
     layout: "/admin"
   }
   // {

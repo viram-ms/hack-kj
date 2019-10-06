@@ -109,8 +109,8 @@ const emailsSubscriptionChart = {
     axisX: {
       showGrid: false
     },
-    low: 0,
-    high: 100,
+    low: 20,
+    high: 250,
     height: 450,
     chartPadding: {
       top: 0,

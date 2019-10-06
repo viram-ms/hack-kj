@@ -50,25 +50,25 @@ import {
 } from "variables/charts.js";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
-
+import TextField from "@material-ui/core/TextField";
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import { Button } from "@material-ui/core";
 import { crops } from "../../variables/crops";
-
+import Chip from "@material-ui/core/Chip";
 const useStyles = makeStyles(styles);
 
 const rain = 500;
 const useStyles2 = makeStyles(theme => ({
   fab: {
-    position: 'fixed',
+    position: "fixed",
     right: 0,
     bottom: 0,
     marginRight: theme.spacing(4),
     marginBottom: theme.spacing(2),
-    zIndex: 1000,
+    zIndex: 1000
   },
   chat: {
-    position: 'fixed',
+    position: "fixed",
     right: 50,
     bottom: 100,
     zIndex: 1000,
@@ -83,12 +83,13 @@ export default function Feed() {
   const classes2 = useStyles2();
   const [values, setValues] = React.useState();
   const [regions, setRegions] = React.useState();
-
+  const [color, setColor] = React.useState("Rainfall");
   const [circular, setCircular] = React.useState(false);
   const [display, setDisplay] = React.useState(false);
-  const [year, setYear] = React.useState();
+  const [find, setFind] = React.useState("Rainfall");
   const [message, fetchCall] = useEditHttp();
   const [newCrops, setCrops] = React.useState();
+  const [input, setInput] = React.useState();
   const handleChange = event => {
     setValues(event.target.value);
     const temp = [];
@@ -102,59 +103,56 @@ export default function Feed() {
 
   const handleFab = event => {
     setDisplay(!display);
-  }
-
-  const handleSubmitSoil = crop => {
-    console.log(crop);
-    let searchString = `${crop} soil`;
-    let elements = window.google.search.cse.element.getAllElements();
-    Object.keys(elements).forEach(element => {
-      elements[element].execute(searchString);
-    });
   };
 
-  const handleSubmitRainfall = crop => {
-    console.log(crop);
-    let searchString = `${crop} Rainfall Required `;
-    let elements = window.google.search.cse.element.getAllElements();
-    Object.keys(elements).forEach(element => {
-      elements[element].execute(searchString);
-    });
+  const handleChangeInput = event => {
+    setInput(event.target.value);
   };
 
-  const handleSubmitTemp = crop => {
-    console.log(crop);
-    let searchString = `${crop} Temperature Range`;
-    let elements = window.google.search.cse.element.getAllElements();
-    Object.keys(elements).forEach(element => {
-      elements[element].execute(searchString);
-    });
+  const handleSubmit = () => {
+    let value = input;
+    console.log(value.split(" ").join("-"));
+    setFind(
+      value
+        .trim()
+        .split(" ")
+        .join("-")
+    );
+    fetch(
+      `https://newsapi.org/v2/everything?q=${find}-in-india&apiKey=e98bd0f1799942cb96a52b78134fa751`
+    )
+      .then(res => res.json())
+      .then(data => setRegions(data));
   };
 
-  const handleSubmitDiease = crop => {
-    console.log(crop);
-    let searchString = `${crop} Dieases`;
-    let elements = window.google.search.cse.element.getAllElements();
-    Object.keys(elements).forEach(element => {
-      elements[element].execute(searchString);
-    });
+  const handleClick = obj => {
+    setFind(obj);
+    setColor(obj);
+    fetch(
+      `https://newsapi.org/v2/everything?q=${obj}-in-india&apiKey=e98bd0f1799942cb96a52b78134fa751`
+    )
+      .then(res => res.json())
+      .then(data => setRegions(data));
+    console.log(regions);
   };
 
   React.useEffect(() => {
-    fetchCall(`/graph/regions`);
-    setRegions(message);
-    console.log(crops);
+    fetch(
+      `https://newsapi.org/v2/everything?q=rain-in-india&apiKey=e98bd0f1799942cb96a52b78134fa751`
+    )
+      .then(res => res.json())
+      .then(data => setRegions(data));
+    console.log(regions);
   }, []);
   return (
     <div>
       <GridContainer style={{ justifyContent: "center", textAlign: "center" }}>
-     
-        <GridItem xs={12}>
-       <div class="gcse-search" style={{visibility: 'hidden!important'}}></div>
-
-        </GridItem>
-
-      
+        {/* <GridItem xs={12}>
+          <div
+            class="gcse-search"
+            style={{ visibility: "hidden!important" }}
+          ></div>
+        </GridItem> */}
       </GridContainer>
       <Helmet>
         <script
@@ -162,120 +160,121 @@ export default function Feed() {
           src="https://cse.google.com/cse.js?cx=013071202003806884029:5zihfoylkih"
         ></script>
       </Helmet>
-      {/* <form
-        method="get"
-        title="Search Form"
-        action="https://cse.google.com/cse.js?cx=013071202003806884029:5zihfoylkih"
+      <GridContainer>
+        <GridItem>
+          <TextField
+            id="standard-name"
+            label="Search Latest News"
+            // className={classes.textField}
+            style={{ width: 400 }}
+            value={input}
+            onChange={handleChangeInput}
+            margin="normal"
+          />
+        </GridItem>
+        <GridItem style={{ alignSelf: "flex-end" }}>
+          <Chip
+            variant="contained"
+            label="submit"
+            onClick={handleSubmit}
+          ></Chip>
+        </GridItem>
+      </GridContainer>
+      {/* <br /> */}
+      <p>Related Searches</p>
+      <div>
+        <Chip
+          label="Rainfall"
+          onClick={handleClick.bind(this, "Rainfall")}
+          color={color === "Rainfall" ? "Primary" : ""}
+          style={{ marginRight: 10 }}
+        />
+        <Chip
+          label="Farmers"
+          onClick={handleClick.bind(this, "Farmers")}
+          color={color === "Farmers" ? "Primary" : ""}
+          style={{ marginRight: 10 }}
+        />
+        <Chip
+          label="Agriculture"
+          onClick={handleClick.bind(this, "Agriculture")}
+          color={color === "Agriculture" ? "Primary" : ""}
+          style={{ marginRight: 10 }}
+        />
+        <Chip
+          label="Crop Diseases"
+          onClick={handleClick.bind(this, "Crop-Diseases")}
+          color={color === "Crop-Diseases" ? "Primary" : ""}
+          style={{ marginRight: 10 }}
+        />
+        <Chip
+          label="Crop Protection"
+          onClick={handleClick.bind(this, "Crop-Protection")}
+          color={color === "Crop-Protection" ? "Primary" : ""}
+          style={{ marginRight: 10 }}
+        />
+        <Chip
+          label="Irrigation"
+          onClick={handleClick.bind(this, "Irrigation")}
+          color={color === "Irrigation" ? "Primary" : ""}
+          style={{ marginRight: 10 }}
+        />
+      </div>
+
+      <h4>Viewing Latest News on {find}</h4>
+      <GridContainer>
+        {regions &&
+          regions.articles.map(item => (
+            // eslint-disable-next-line react/jsx-key
+            <GridItem xs={12} sm={12} md={6}>
+              <Card style={{ height: 520 }}>
+                <CardHeader>
+                  <a href={item.url}>
+                    {" "}
+                    <img
+                      src={item.urlToImage}
+                      style={{ width: "100%", height: 250 }}
+                    />{" "}
+                  </a>
+                  <p style={{ float: "right" }}>src: {item.source.name}</p>
+                  {/* <img src={crops[`${item}`].url}  style={{width: 100, height: 100}}/> */}
+                </CardHeader>
+                <CardBody>
+                  <h5
+                    style={{
+                      marginTop: "-10px",
+                      color: "black!important",
+                      fontWeight: 500,
+                      background: "transparent"
+                    }}
+                  >
+                    {item.title}
+                  </h5>
+                  {/* <p>{item.description}</p> */}
+                  <p>{item.content}</p>
+                </CardBody>
+              </Card>
+            </GridItem>
+          ))}
+      </GridContainer>
+
+      <Fab
+        color="primary"
+        aria-label="add"
+        className={classes2.fab}
+        onClick={handleFab}
       >
-        <div class="gcse-search">
-          <input
-            type="text"
-            id="q"
-            name="q"
-            title="Search this site"
-            alt="Search Text"
-            maxlength="256"
-          />
-          <input
-            type="hidden"
-            id="cx"
-            name="cx"
-            value="013071202003806884029:5zihfoylkih"
-          />
-          <input
-            type="image"
-            id="searchSubmit"
-            name="submit"
-            src="https://www.flaticon.com/free-icon/active-search-symbol_34148"
-            alt="Go"
-            title="Submit Search Query"
-          />
-        </div>
-      </form>
-      <button onClick={handleSubmit}>Submit</button> */}
-      {newCrops && (
-        <div>
-          {" "}
-          <h3>Suitable Crops For {values}</h3>
-          <GridContainer>
-            {newCrops.map((item, id) => (
-              <GridItem xs={12} sm={12} md={6} key={id}>
-                <Card>
-                  <CardHeader style={{backgroundImage:" url(" + crops[`${item}`].url + ")", height: 200}}>
-                    <h3  style={{color: 'black!important', fontWeight: 500, background: 'transparent'}}>{item}</h3>
-                    {/* <img src={crops[`${item}`].url}  style={{width: 100, height: 100}}/> */}
-                  </CardHeader>
-                  <CardBody>
-                    <GridContainer>
-                      <GridItem xs={4}>
-                        <p>Soil Required</p>
-                      </GridItem>
-                      <GridItem xs={4} style={{ display: "flex" }}>
-                        {crops[`${item}`].soil.map(item => (
-                          <p>{item}, </p>
-                        ))}
-                      </GridItem>
-                      <GridItem xs={4}>
-                        <Button onClick={handleSubmitSoil.bind(this,item)}>View More</Button>
-                      </GridItem>
-                    </GridContainer>
-                    <GridContainer>
-                      <GridItem xs={4}>
-                        <p>Rainfall Range</p>
-                      </GridItem>
-                      <GridItem xs={4}>
-                        {crops[`${item}`].min_rain} -{" "}
-                        {crops[`${item}`].max_rain} <span>mm</span>
-                      </GridItem>
-                      <GridItem xs={4}>
-                        <Button onClick={handleSubmitRainfall.bind(this,item)}>View More</Button>
-                      </GridItem>
-                    </GridContainer>
-                    <GridContainer>
-                      <GridItem xs={4}>
-                        <p>Temperature Range</p>
-                      </GridItem>
-                      <GridItem xs={4}>
-                        {crops[`${item}`].min_temp} -{" "}
-                        {crops[`${item}`].max_temp}{" "}
-                        <span>
-                          <sup>0 </sup>C
-                        </span>
-                      </GridItem>
-                      <GridItem xs={4}>
-                        <Button onClick={handleSubmitTemp.bind(this,item)}>View More</Button>
-                      </GridItem>
-                    </GridContainer>
-                    <GridContainer>
-                      <GridItem xs={4}>
-                        <p>Diseases</p>
-                      </GridItem>
-                      <GridItem xs={4}  style={{ display: "flex" }}>
-                      {crops[`${item}`].disease.map(item => (
-                          <p>{item}, </p>
-                        ))}
-                      </GridItem>
-                      <GridItem xs={4}>
-                        <Button onClick={handleSubmitDiease.bind(this,item)}>View More</Button>
-                      </GridItem>
-                    </GridContainer>
-                  </CardBody>
-                </Card>
-              </GridItem>
-            ))}
-          </GridContainer>{" "}
-        </div>
-      )}
-      <Fab color="primary" aria-label="add" className={classes2.fab} onClick={handleFab}>
         <AddIcon />
       </Fab>
-      { display && <iframe
-        allow="microphone;"
-        width="350"
-        height="430"
-        src="https://console.dialogflow.com/api-client/demo/embedded/66399058-a9e5-496a-9f33-3a3268e4a7b3"
-        className={classes2.chat}
-      ></iframe>}
+      {display && (
+        <iframe
+          allow="microphone;"
+          width="350"
+          height="430"
+          src="https://console.dialogflow.com/api-client/demo/embedded/66399058-a9e5-496a-9f33-3a3268e4a7b3"
+          className={classes2.chat}
+        ></iframe>
+      )}
     </div>
   );
 }

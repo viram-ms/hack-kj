@@ -40,6 +40,8 @@ import { useEditHttp } from "../../Hooks/editHttp";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
+import { usePostHttp } from "../../Hooks/postHttp";
+
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
@@ -55,21 +57,22 @@ import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js"
 import "./style.css";
 import { Button } from "@material-ui/core";
 import { crops } from "../../variables/crops";
+import { setSourceMapRange } from "typescript";
 
 const useStyles = makeStyles(styles);
 
 const rain = 500;
 const useStyles2 = makeStyles(theme => ({
   fab: {
-    position: 'fixed',
+    position: "fixed",
     right: 0,
     bottom: 0,
     marginRight: theme.spacing(4),
     marginBottom: theme.spacing(2),
-    zIndex: 1000,
+    zIndex: 1000
   },
   chat: {
-    position: 'fixed',
+    position: "fixed",
     right: 50,
     bottom: 100,
     zIndex: 1000,
@@ -84,17 +87,48 @@ export default function Dashboard() {
   const classes2 = useStyles2();
   const [values, setValues] = React.useState();
   const [regions, setRegions] = React.useState();
+  const [predicted_rain, setPredictedRain] = React.useState();
 
   const [circular, setCircular] = React.useState(false);
   const [display, setDisplay] = React.useState(false);
   const [year, setYear] = React.useState();
   const [message, fetchCall] = useEditHttp();
   const [newCrops, setCrops] = React.useState();
-  const handleChange = event => {
+  const [sumRain, setSumRain] = React.useState();
+  const [yearRain, fetchPostCall] = usePostHttp();
+
+  const handleChange = async event => {
     setValues(event.target.value);
+    const payload2 = {
+      region: "SUBDIVISION_" + event.target.value
+    };
+    const predictedRain = await fetchPostCall(
+      `/graph/predicted_rain/`,
+      JSON.stringify(payload2)
+    );
+
+    console.log(predictedRain);
+
+    setPredictedRain(predictedRain);
+    let sum =
+     predictedRain["months_JAN"][0] +
+     predictedRain["months_FEB"][0] +
+     predictedRain["months_MAR"][0] +
+     predictedRain["months_APR"][0] +
+     predictedRain["months_MAY"][0] +
+     predictedRain["months_JUN"][0] +
+     predictedRain["months_JUL"][0] +
+     predictedRain["months_AUG"][0] +
+     predictedRain["months_SEP"][0] +
+     predictedRain["months_OCT"][0] +
+     predictedRain["months_NOV"][0] +
+     predictedRain["months_DEC"][0];
+
+    setSumRain(sum);
+    console.log(sum);
     const temp = [];
     Object.values(crops).map(item => {
-      if (item.min_rain < rain && rain < item.max_rain) {
+      if (item.min_rain < sum && sum < item.max_rain) {
         temp.push(item.crop);
       }
     });
@@ -103,7 +137,7 @@ export default function Dashboard() {
 
   const handleFab = event => {
     setDisplay(!display);
-  }
+  };
 
   const handleSubmitSoil = crop => {
     console.log(crop);
@@ -180,31 +214,62 @@ export default function Dashboard() {
           </FormControl>
         </GridItem>
         <GridItem xs={6}>
-       <div class="gcse-search" style={{visibility: 'hidden!important'}}></div>
-
+          <div
+            class="gcse-search"
+            style={{ visibility: "hidden!important" }}
+          ></div>
         </GridItem>
 
         <GridItem xs={12} style={{ textAlign: "center" }}>
           {circular && <CircularProgress className={classes.progress} />}
         </GridItem>
-        {!circular && (
+        {!circular && predicted_rain && (
           <GridItem xs={12}>
             <Card chart>
-              <CardHeader color="success">
+              <CardHeader color="warning">
                 <ChartistGraph
                   className="ct-chart"
-                  data={dailySalesChart.data}
-                  type="Line"
-                  options={dailySalesChart.options}
-                  listener={dailySalesChart.animation}
+                  data={{
+                    labels: [
+                      "Jan",
+                      "Feb",
+                      "Mar",
+                      "Apr",
+                      "Mai",
+                      "Jun",
+                      "Jul",
+                      "Aug",
+                      "Sep",
+                      "Oct",
+                      "Nov",
+                      "Dec"
+                    ],
+                    series: [
+                      [
+                        predicted_rain["months_JAN"][0],
+                        predicted_rain["months_FEB"][0],
+                        predicted_rain["months_MAR"][0],
+                        predicted_rain["months_APR"][0],
+                        predicted_rain["months_MAY"][0],
+                        predicted_rain["months_JUN"][0],
+                        predicted_rain["months_JUL"][0],
+                        predicted_rain["months_AUG"][0],
+                        predicted_rain["months_SEP"][0],
+                        predicted_rain["months_OCT"][0],
+                        predicted_rain["months_NOV"][0],
+                        predicted_rain["months_DEC"][0]
+                      ]
+                    ]
+                  }}
+                  type="Bar"
+                  options={emailsSubscriptionChart.options}
+                  responsiveOptions={emailsSubscriptionChart.responsiveOptions}
+                  listener={emailsSubscriptionChart.animation}
                 />
               </CardHeader>
-              <CardBody style={{ display: "flex" }}>
-                <h4
-                  className={classes.cardTitle}
-                  style={{ flex: 1, marginTop: 10 }}
-                >
-                  Predicted Rainfall of year 2020
+              <CardBody style={{ margin: "12px 0px", alignItems: "center" }}>
+                <h4 className={classes.cardTitle}>
+                  Rainfall Prediction of the year 2020
                 </h4>
               </CardBody>
             </Card>
@@ -251,14 +316,26 @@ export default function Dashboard() {
       {values && newCrops && (
         <div>
           {" "}
-          <h3>Suitable Crops For {values}</h3>
+          <h3>Suitable Crops For {values} For Annual Rainfall {sumRain} mm</h3>
           <GridContainer>
             {newCrops.map((item, id) => (
               <GridItem xs={12} sm={12} md={6} key={id}>
                 <Card>
-                  <CardHeader style={{backgroundImage:" url(" + crops[`${item}`].url + ")", height: 200}}>
-                    <h3  style={{color: 'black!important', fontWeight: 500, background: 'transparent'}}>{item}</h3>
-                    {/* <img src={crops[`${item}`].url}  style={{width: 100, height: 100}}/> */}
+                  <CardHeader
+                    style={{
+                      backgroundImage: " url(" + crops[`${item}`].url + ")",
+                      height: 200
+                    }}
+                  >
+                    <h3
+                      style={{
+                        color: "white",
+                        fontWeight: 500,
+                        background: "transparent"
+                      }}
+                    >
+                      {item}
+                    </h3>
                   </CardHeader>
                   <CardBody>
                     <GridContainer>
@@ -271,7 +348,9 @@ export default function Dashboard() {
                         ))}
                       </GridItem>
                       <GridItem xs={4}>
-                        <Button onClick={handleSubmitSoil.bind(this,item)}>View More</Button>
+                        <Button onClick={handleSubmitSoil.bind(this, item)}>
+                          View More
+                        </Button>
                       </GridItem>
                     </GridContainer>
                     <GridContainer>
@@ -283,7 +362,9 @@ export default function Dashboard() {
                         {crops[`${item}`].max_rain} <span>mm</span>
                       </GridItem>
                       <GridItem xs={4}>
-                        <Button onClick={handleSubmitRainfall.bind(this,item)}>View More</Button>
+                        <Button onClick={handleSubmitRainfall.bind(this, item)}>
+                          View More
+                        </Button>
                       </GridItem>
                     </GridContainer>
                     <GridContainer>
@@ -298,20 +379,24 @@ export default function Dashboard() {
                         </span>
                       </GridItem>
                       <GridItem xs={4}>
-                        <Button onClick={handleSubmitTemp.bind(this,item)}>View More</Button>
+                        <Button onClick={handleSubmitTemp.bind(this, item)}>
+                          View More
+                        </Button>
                       </GridItem>
                     </GridContainer>
                     <GridContainer>
                       <GridItem xs={4}>
                         <p>Diseases</p>
                       </GridItem>
-                      <GridItem xs={4}  style={{ display: "flex" }}>
-                      {crops[`${item}`].disease.map(item => (
+                      <GridItem xs={4} style={{ display: "flex" }}>
+                        {crops[`${item}`].disease.map(item => (
                           <p>{item}, </p>
                         ))}
                       </GridItem>
                       <GridItem xs={4}>
-                        <Button onClick={handleSubmitDiease.bind(this,item)}>View More</Button>
+                        <Button onClick={handleSubmitDiease.bind(this, item)}>
+                          View More
+                        </Button>
                       </GridItem>
                     </GridContainer>
                   </CardBody>
@@ -321,16 +406,23 @@ export default function Dashboard() {
           </GridContainer>{" "}
         </div>
       )}
-      <Fab color="primary" aria-label="add" className={classes2.fab} onClick={handleFab}>
+      <Fab
+        color="primary"
+        aria-label="add"
+        className={classes2.fab}
+        onClick={handleFab}
+      >
         <AddIcon />
       </Fab>
-      { display && <iframe
-        allow="microphone;"
-        width="350"
-        height="430"
-        src="https://console.dialogflow.com/api-client/demo/embedded/66399058-a9e5-496a-9f33-3a3268e4a7b3"
-        className={classes2.chat}
-      ></iframe>}
+      {display && (
+        <iframe
+          allow="microphone;"
+          width="350"
+          height="430"
+          src="https://console.dialogflow.com/api-client/demo/embedded/66399058-a9e5-496a-9f33-3a3268e4a7b3"
+          className={classes2.chat}
+        ></iframe>
+      )}
     </div>
   );
 }

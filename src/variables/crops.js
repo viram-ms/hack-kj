@@ -144,7 +144,7 @@ const crops = {
       min_temp: 20,
       max_temp: 30,
       min_rain: 500,
-      max_rain: 7500,
+      max_rain: 1500,
       crop: 'Groundnut',
       soil: ["red", "black"],
       disease:["Stem rot","Fusarium Wilt"],
