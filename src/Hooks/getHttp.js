@@ -1,6 +1,6 @@
 import { useState } from "react";
 export const useGetHttp = () => {
-//   const [fetchData, setFetchedData] = useState(null);
+  //   const [fetchData, setFetchedData] = useState(null);
   const [messageGet, setMessage] = useState("");
 
   async function fetchGetCall(url) {
@@ -14,7 +14,7 @@ export const useGetHttp = () => {
     console.log(data);
     if (res) {
       if (res.status === 200) {
-          setMessage(data)
+        setMessage(data);
       }
     }
   }

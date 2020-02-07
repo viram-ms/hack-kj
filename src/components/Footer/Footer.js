@@ -16,6 +16,7 @@ export default function Footer(props) {
     <footer className={classes.footer}>
       <div className={classes.container}>
         <div className={classes.left}>
+      <div id="google_translate_element2"></div>
          
         </div>
       </div>

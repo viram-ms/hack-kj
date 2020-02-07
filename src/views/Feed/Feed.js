@@ -236,13 +236,13 @@ export default function Feed() {
                       style={{ width: "100%", height: 250 }}
                     />{" "}
                   </a>
-                  <p style={{ float: "right" }}>src: {item.source.name}</p>
+                  <p style={{ float: "right" }}>published on:  {item.publishedAt.substring(0,10)}</p>
                   {/* <img src={crops[`${item}`].url}  style={{width: 100, height: 100}}/> */}
                 </CardHeader>
                 <CardBody>
                   <h5
                     style={{
-                      marginTop: "-10px",
+                      marginTop: "-20px",
                       color: "black!important",
                       fontWeight: 500,
                       background: "transparent"

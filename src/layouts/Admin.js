@@ -12,8 +12,8 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 import routes from "routes.js";
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
-import bgImage from "assets/img/sidebar-2.jpg";
-import logo from "assets/img/reactlogo.png";
+import bgImage from "assets/img/farming-side.jpg";
+import logo from "assets/img/farming.png";
 
 let ps;
 
@@ -111,6 +111,8 @@ export default function Admin({ ...rest }) {
         {getRoute() ? (
           <div className={classes.content}>
             <div className={classes.container}>{switchRoutes}</div>
+      {/* <div id="google_translate_element2"></div> */}
+
           </div>
         ) : (
           <div className={classes.map}>{switchRoutes}</div>

@@ -60,15 +60,15 @@ const useStyles = makeStyles(styles);
 
 const useStyles2 = makeStyles(theme => ({
   fab: {
-    position: 'fixed',
+    position: "fixed",
     right: 0,
     bottom: 0,
     marginRight: theme.spacing(4),
     marginBottom: theme.spacing(2),
-    zIndex: 1000,
+    zIndex: 1000
   },
   chat: {
-    position: 'fixed',
+    position: "fixed",
     right: 50,
     bottom: 100,
     zIndex: 1000,
@@ -83,7 +83,7 @@ export default function Dashboard() {
   const classes = useStyles();
   const classes2 = useStyles2();
 
-  const [values, setValues] = React.useState('BIHAR');
+  const [values, setValues] = React.useState("BIHAR");
   const [circular, setCircular] = React.useState(false);
   const [year, setYear] = React.useState();
   const [year_rain_annually, setYearRain] = React.useState();
@@ -97,15 +97,28 @@ export default function Dashboard() {
   const [yearData, setGraphData] = React.useState();
   const [regions, setRegions] = React.useState();
   const [display, setDisplay] = React.useState(false);
-  const [avgValues,setAvgValues] = React.useState();
+  const [avgValues, setAvgValues] = React.useState();
+
+  // <script type="text/javascript">
+  const googleTranslateElementInit2 = () => {
+    const google = window.google;
+    new google.translate.TranslateElement(
+      { pageLanguage: "en", autoDisplay: false },
+      "google_translate_element2"
+    );
+
+    // eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('6 7(a,b){n{4(2.9){3 c=2.9("o");c.p(b,f,f);a.q(c)}g{3 c=2.r();a.s(\'t\'+b,c)}}u(e){}}6 h(a){4(a.8)a=a.8;4(a==\'\')v;3 b=a.w(\'|\')[1];3 c;3 d=2.x(\'y\');z(3 i=0;i<d.5;i++)4(d[i].A==\'B-C-D\')c=d[i];4(2.j(\'k\')==E||2.j(\'k\').l.5==0||c.5==0||c.l.5==0){F(6(){h(a)},G)}g{c.8=b;7(c,\'m\');7(c,\'m\')}}',43,43,'||document|var|if|length|function|GTranslateFireEvent|value|createEvent||||||true|else|doGTranslate||getElementById|google_translate_element2|innerHTML|change|try|HTMLEvents|initEvent|dispatchEvent|createEventObject|fireEvent|on|catch|return|split|getElementsByTagName|select|for|className|goog|te|combo|null|setTimeout|500'.split('|'),0,{}))
+
+  };
+  //  </script>
 
   const handleFab = event => {
     setDisplay(!display);
-  }
+  };
   const handleChange = async event => {
     setValues(event.target.value);
     const payload = {
-      region: event.target.value 
+      region: event.target.value
     };
     const rainData = await fetchPostCall(
       `/graph/yearly_rain/`,
@@ -113,7 +126,7 @@ export default function Dashboard() {
     );
 
     const payload2 = {
-      region: 'SUBDIVISION_' +event.target.value 
+      region: "SUBDIVISION_" + event.target.value
     };
     const predictedRain = await fetchPostCall(
       `/graph/predicted_rain/`,
@@ -160,13 +173,19 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="warning" stats icon>
               <CardIcon color="warning">
-              <CloudOff />
+                <CloudOff />
               </CardIcon>
-              <p className={classes.cardCategory} style={{fontSize: '18px!important'}}>Below 500mm</p>
+              <p
+                className={classes.cardCategory}
+                style={{ fontSize: "18px!important" }}
+              >
+                Below 500mm
+              </p>
             </CardHeader>
             <CardBody>
-              <span style={{color: 'black'}}>HARYANA & DELHI </span> , <span> </span>
-              <span style={{color: 'black'}}>WEST RAJASTHAN</span>
+              <span style={{ color: "black" }}>HARYANA & DELHI </span> ,{" "}
+              <span> </span>
+              <span style={{ color: "black" }}>WEST RAJASTHAN</span>
             </CardBody>
           </Card>
         </GridItem>
@@ -174,15 +193,20 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="success" stats icon>
               <CardIcon color="success">
-              <CloudQueue />
+                <CloudQueue />
               </CardIcon>
-              <p className={classes.cardCategory} style={{fontSize: '18px!important'}}>500 - 1000 mm</p>
-           
+              <p
+                className={classes.cardCategory}
+                style={{ fontSize: "18px!important" }}
+              >
+                500 - 1000 mm
+              </p>
             </CardHeader>
             <CardBody>
-            <span style={{color: 'black'}}>UTTAR PRADESH</span>, <span> </span>
-              <span style={{color: 'black'}}>PUNJAB</span> , <span> </span>
-              <span style={{color: 'black'}}>SAURASHTRA & KUTCH</span>
+              <span style={{ color: "black" }}>UTTAR PRADESH</span>,{" "}
+              <span> </span>
+              <span style={{ color: "black" }}>PUNJAB</span> , <span> </span>
+              <span style={{ color: "black" }}>SAURASHTRA & KUTCH</span>
             </CardBody>
           </Card>
         </GridItem>
@@ -190,17 +214,21 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="danger" stats icon>
               <CardIcon color="danger">
-               <CloudCircle />
+                <CloudCircle />
               </CardIcon>
-              <p className={classes.cardCategory} style={{fontSize: '18px!important'}}>1000 - 1500 mm</p>
-            
+              <p
+                className={classes.cardCategory}
+                style={{ fontSize: "18px!important" }}
+              >
+                1000 - 1500 mm
+              </p>
             </CardHeader>
             <CardBody>
-            <span style={{color: 'black'}}>ORISSA</span>, <span> </span>
-             <span style={{color: 'black'}}>VIDARBHA</span>, <span> </span>
-             <span style={{color: 'black'}}>CHHATTISGARH</span>, <span> </span>
-             <span style={{color: 'black'}}>BIHAR</span>, <span> </span>
-
+              <span style={{ color: "black" }}>ORISSA</span>, <span> </span>
+              <span style={{ color: "black" }}>VIDARBHA</span>, <span> </span>
+              <span style={{ color: "black" }}>CHHATTISGARH</span>,{" "}
+              <span> </span>
+              <span style={{ color: "black" }}>BIHAR</span>, <span> </span>
             </CardBody>
           </Card>
         </GridItem>
@@ -208,16 +236,23 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
-               <Cloud />
+                <Cloud />
               </CardIcon>
-              <p className={classes.cardCategory} style={{fontSize: '18px!important'}}>Above 1500mm</p>
+              <p
+                className={classes.cardCategory}
+                style={{ fontSize: "18px!important" }}
+              >
+                Above 1500mm
+              </p>
             </CardHeader>
             <CardBody>
-            <span style={{color: 'black'}}>ARUNACHAL PRADESH</span>, <span> </span>
-            <span style={{color: 'black'}}>KONKAN & GOA</span>, <span> </span>
-            <span style={{color: 'black'}}>ASSAM & MEGHALAYA</span>, <span> </span>
+              <span style={{ color: "black" }}>ARUNACHAL PRADESH</span>,{" "}
+              <span> </span>
+              <span style={{ color: "black" }}>KONKAN & GOA</span>,{" "}
+              <span> </span>
+              <span style={{ color: "black" }}>ASSAM & MEGHALAYA</span>,{" "}
+              <span> </span>
             </CardBody>
-          
           </Card>
         </GridItem>
       </GridContainer>
@@ -253,7 +288,9 @@ export default function Dashboard() {
             </Select>
           </FormControl>
         </GridItem>
-        <GridItem xs={6}>{values && <p>Showing Results For  {values}  Region</p>}</GridItem>
+        <GridItem xs={6}>
+          {values && <p>Showing Results For {values} Region</p>}
+        </GridItem>
         <GridItem xs={10} style={{ textAlign: "center" }}>
           {circular && <CircularProgress className={classes.progress} />}
         </GridItem>
@@ -348,7 +385,7 @@ export default function Dashboard() {
             </Card>
           </GridItem>
         )}
-       
+
         {year_rain_annually && year_rain_monthly && (
           <GridItem xs={6}>
             <Card chart>
@@ -385,7 +422,8 @@ export default function Dashboard() {
                       right: 5,
                       bottom: 0,
                       left: 0
-                    }}}
+                    }
+                  }}
                   responsiveOptions={emailsSubscriptionChart.responsiveOptions}
                   listener={emailsSubscriptionChart.animation}
                 />
@@ -400,129 +438,135 @@ export default function Dashboard() {
         )}
 
         {!circular && predicted_rain && (
-                  <GridItem xs={12}>
-                    <Card chart>
-                      <CardHeader color="warning">
-                        <ChartistGraph
-                          className="ct-chart"
-                          data={{ labels: [
-                            "Jan",
-                            "Feb",
-                            "Mar",
-                            "Apr",
-                            "Mai",
-                            "Jun",
-                            "Jul",
-                            "Aug",
-                            "Sep",
-                            "Oct",
-                            "Nov",
-                            "Dec"
-                          ],
-                          series: [[predicted_rain['months_JAN'][0],
-                          predicted_rain['months_FEB'][0],
-                          predicted_rain['months_MAR'][0],
-                          predicted_rain['months_APR'][0],  
-                          predicted_rain['months_MAY'][0],
-                          predicted_rain['months_JUN'][0],
-                          predicted_rain['months_JUL'][0],
-                          predicted_rain['months_AUG'][0],
-                          predicted_rain['months_SEP'][0],
-                          predicted_rain['months_OCT'][0],
-                          predicted_rain['months_NOV'][0],
-                          predicted_rain['months_DEC'][0],   ]]}}
-                          
-                          type="Bar"
-                          options={emailsSubscriptionChart.options}
-                          responsiveOptions={emailsSubscriptionChart.responsiveOptions}
-                          listener={emailsSubscriptionChart.animation}
-                        />
-                      </CardHeader>
-                      <CardBody style={{margin: '12px 0px',alignItems: 'center'}}>
-                        <h4 className={classes.cardTitle} >
-                          Rainfall Prediction of the year 2020
-                        </h4>
-                      </CardBody>
-                    </Card>
-                  </GridItem>
-                )}
+          <GridItem xs={12}>
+            <Card chart>
+              <CardHeader color="warning">
+                <ChartistGraph
+                  className="ct-chart"
+                  data={{
+                    labels: [
+                      "Jan",
+                      "Feb",
+                      "Mar",
+                      "Apr",
+                      "Mai",
+                      "Jun",
+                      "Jul",
+                      "Aug",
+                      "Sep",
+                      "Oct",
+                      "Nov",
+                      "Dec"
+                    ],
+                    series: [
+                      [
+                        predicted_rain["months_JAN"][0],
+                        predicted_rain["months_FEB"][0],
+                        predicted_rain["months_MAR"][0],
+                        predicted_rain["months_APR"][0],
+                        predicted_rain["months_MAY"][0],
+                        predicted_rain["months_JUN"][0],
+                        predicted_rain["months_JUL"][0],
+                        predicted_rain["months_AUG"][0],
+                        predicted_rain["months_SEP"][0],
+                        predicted_rain["months_OCT"][0],
+                        predicted_rain["months_NOV"][0],
+                        predicted_rain["months_DEC"][0]
+                      ]
+                    ]
+                  }}
+                  type="Bar"
+                  options={emailsSubscriptionChart.options}
+                  responsiveOptions={emailsSubscriptionChart.responsiveOptions}
+                  listener={emailsSubscriptionChart.animation}
+                />
+              </CardHeader>
+              <CardBody style={{ margin: "12px 0px", alignItems: "center" }}>
+                <h4 className={classes.cardTitle}>
+                  Rainfall Prediction of the year 2020
+                </h4>
+              </CardBody>
+            </Card>
+          </GridItem>
+        )}
       </GridContainer>
-      <Fab color="primary" aria-label="add" className={classes2.fab} onClick={handleFab}>
+      <Fab
+        color="primary"
+        aria-label="add"
+        className={classes2.fab}
+        onClick={handleFab}
+      >
         <AddIcon />
       </Fab>
-      { display && <iframe
-        allow="microphone;"
-        width="350"
-        height="430"
-        src="https://console.dialogflow.com/api-client/demo/embedded/66399058-a9e5-496a-9f33-3a3268e4a7b3"
-        className={classes2.chat}
-      ></iframe>}
-
-      {/* <GridContainer>
-        <GridItem xs={12} sm={12} md={6}>
-          <CustomTabs
-            title="Tasks:"
-            headerColor="primary"
-            tabs={[
-              {
-                tabName: "Bugs",
-                tabIcon: BugReport,
-                tabContent: (
-                  <Tasks
-                    checkedIndexes={[0, 3]}
-                    tasksIndexes={[0, 1, 2, 3]}
-                    tasks={bugs}
-                  />
-                )
-              },
-              {
-                tabName: "Website",
-                tabIcon: Code,
-                tabContent: (
-                  <Tasks
-                    checkedIndexes={[0]}
-                    tasksIndexes={[0, 1]}
-                    tasks={website}
-                  />
-                )
-              },
-              {
-                tabName: "Server",
-                tabIcon: Cloud,
-                tabContent: (
-                  <Tasks
-                    checkedIndexes={[1]}
-                    tasksIndexes={[0, 1, 2]}
-                    tasks={server}
-                  />
-                )
-              }
-            ]}
-          />
-        </GridItem>
-        <GridItem xs={12} sm={12} md={6}>
-          <Card>
-            <CardHeader color="warning">
-              <h4 className={classes.cardTitleWhite}>Employees Stats</h4>
-              <p className={classes.cardCategoryWhite}>
-                New employees on 15th September, 2016
-              </p>
-            </CardHeader>
-            <CardBody>
-              <Table
-                tableHeaderColor="warning"
-                tableHead={["ID", "Name", "Salary", "Country"]}
-                tableData={[
-                  ["1", "Dakota Rice", "$36,738", "Niger"],
-                  ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                  ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                  ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                ]}
-              />
-            </CardBody>
-          </Card>
-        </GridItem>
-      </GridContainer> */}
+      {display && (
+        <iframe
+          allow="microphone;"
+          width="350"
+          height="430"
+          src="https://console.dialogflow.com/api-client/demo/embedded/66399058-a9e5-496a-9f33-3a3268e4a7b3"
+          className={classes2.chat}
+        ></iframe>
+      )}
+      {/* <select onChange={googleTranslateElementInit2}>
+        <option value="">Select Language</option>
+        <option value="en|af">Afrikaans</option>
+        <option value="en|sq">Albanian</option>
+        <option value="en|ar">Arabic</option>
+        <option value="en|hy">Armenian</option>
+        <option value="en|az">Azerbaijani</option>
+        <option value="en|eu">Basque</option>
+        <option value="en|be">Belarusian</option>
+        <option value="en|bg">Bulgarian</option>
+        <option value="en|ca">Catalan</option>
+        <option value="en|zh-CN">Chinese (Simplified)</option>
+        <option value="en|zh-TW">Chinese (Traditional)</option>
+        <option value="en|hr">Croatian</option>
+        <option value="en|cs">Czech</option>
+        <option value="en|da">Danish</option>
+        <option value="en|nl">Dutch</option>
+        <option value="en|en">English</option>
+        <option value="en|et">Estonian</option>
+        <option value="en|tl">Filipino</option>
+        <option value="en|fi">Finnish</option>
+        <option value="en|fr">French</option>
+        <option value="en|gl">Galician</option>
+        <option value="en|ka">Georgian</option>
+        <option value="en|de">German</option>
+        <option value="en|el">Greek</option>
+        <option value="en|ht">Haitian Creole</option>
+        <option value="en|iw">Hebrew</option>
+        <option value="en|hi">Hindi</option>
+        <option value="en|hu">Hungarian</option>
+        <option value="en|is">Icelandic</option>
+        <option value="en|id">Indonesian</option>
+        <option value="en|ga">Irish</option>
+        <option value="en|it">Italian</option>
+        <option value="en|ja">Japanese</option>
+        <option value="en|ko">Korean</option>
+        <option value="en|lv">Latvian</option>
+        <option value="en|lt">Lithuanian</option>
+        <option value="en|mk">Macedonian</option>
+        <option value="en|ms">Malay</option>
+        <option value="en|mt">Maltese</option>
+        <option value="en|no">Norwegian</option>
+        <option value="en|fa">Persian</option>
+        <option value="en|pl">Polish</option>
+        <option value="en|pt">Portuguese</option>
+        <option value="en|ro">Romanian</option>
+        <option value="en|ru">Russian</option>
+        <option value="en|sr">Serbian</option>
+        <option value="en|sk">Slovak</option>
+        <option value="en|sl">Slovenian</option>
+        <option value="en|es">Spanish</option>
+        <option value="en|sw">Swahili</option>
+        <option value="en|sv">Swedish</option>
+        <option value="en|th">Thai</option>
+        <option value="en|ur">Urdu</option>
+        <option value="en|bn">Bengali</option>
+        <option value="en|gu">Gujarati</option>
+        <option value="en|mr">Marathi</option>
+      </select> */}
+      {/* <div id="google_translate_element2"></div> */}
     </div>
   );
 }

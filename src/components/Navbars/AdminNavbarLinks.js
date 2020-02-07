@@ -48,7 +48,7 @@ export default function AdminNavbarLinks() {
     setOpenProfile(null);
   };
   return (
-    <div>
+    <div style={{display: 'flex'}}> 
       {/* <div className={classes.searchWrapper}>
         <CustomInput
           formControlProps={{
@@ -65,7 +65,7 @@ export default function AdminNavbarLinks() {
           <Search />
         </Button>
       </div> */}
-      <Button
+      {/* <Button
         color={window.innerWidth > 959 ? "transparent" : "white"}
         justIcon={window.innerWidth > 959}
         simple={!(window.innerWidth > 959)}
@@ -218,7 +218,10 @@ export default function AdminNavbarLinks() {
             </Grow>
           )}
         </Poppers>
-      </div>
+      </div> */}
+      <a href="http://localhost:8080"><Button style={{marginRight: 20}} color="primary">CALL</Button></a>
+      <div id="google_translate_element2"></div>
+
     </div>
   );
 }

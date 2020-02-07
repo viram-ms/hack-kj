@@ -147,6 +147,7 @@ export default function Sidebar(props) {
           ) : null}
         </Drawer>
       </Hidden>
+      
     </div>
   );
 }
